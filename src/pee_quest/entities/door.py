@@ -51,3 +51,40 @@ class Door:
         self._col_np: NodePath = self.root.attachNewNode(cnode)
 
     # -- udpdate --
+    def update(self, dt: float) -> None:
+        if not self.is_open:
+            self._timer += dt
+            if self._timer >= DOOR_OPEN_INTERVAL:
+                self._open()
+        else:
+            self._open_timer -= dt
+            if self._open_timer <= 0:
+                self._close()
+
+    def _open(self) -> None:
+        self.is_open = True
+        self._timer = 0.0
+        self._open_timer = DOOR_OPEN_DURATION
+
+        # slide the door
+        self._door_vis.setX(2.2)
+        self._door_vis.setColor(*COL_DOOR_OPEN)
+        self._col_np.hide()
+        self._col_np.node().setIntoCollideMask(BitMask32.allOff())
+
+    def _close(self) -> None:
+        self.is_open = False
+        self._door_vis.setX(0)
+        self._door_vis.setColor(*COL_DOOR_CLOSED)
+        self._col_np.hide()
+        self._col_np.node().setIntoCollideMask(BitMask32.bit(2))
+
+    @property
+    def timer_remaining_open(self) -> float:
+        return max(0.0, self._open_timer)
+
+    @property
+    def time_until_open(self) -> float:
+        if self.is_open:
+            return 0.0
+        return max(0.0, DOOR_OPEN_INTERVAL - self._timer)
