@@ -66,4 +66,26 @@ class IndoorScene:
         floor.setPos(0, 0, -0.1)
 
         # walls
-        walls = []
+        walls = [
+            (0, 10, 1.5, 10.0, 0.25, 1.5),  # north
+            (0, -10, 1.5, 10.0, 0.25, 1.5),  # south
+            (10, 0, 1.5, 0.25, 10.0, 1.5),  # East
+            (-10, 0, 1.5, 0.25, 10.0, 1.5),  # west
+        ]
+
+        for px, py, pz, sx, sy, sz in walls:
+            w = ldr.loadModel("models/box")
+            w.setScale(sx, sy, sz)
+            w.setColor(*COL_WALL)
+            w.reparentTo(self.root)
+            w.setPos(px, py, pz)
+
+            # collision
+            cn = CollisionNode("wall_col")
+            cn.addSolid(CollisionBox(Point3(-sx, -sy, 0), Point3(sx, sy, sz)))
+            cn.setfromCollideMask(BitMask32.allOff())
+            cn.setIntoCollideMask(BitMask32.bit(3))
+            w.attachNewNode(cn)
+
+    def _build_furniture(self) -> None:
+        pass
