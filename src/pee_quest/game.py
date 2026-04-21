@@ -6,6 +6,7 @@ from direct.gui.DirectGui import DirectLabel
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import (
     BitMask32,
+    ClockObject,
     CollisionHandlerEvent,
     CollisionNode,
     CollisionSphere,
@@ -14,6 +15,8 @@ from panda3d.core import (
     Vec3,
     WindowProperties,
 )
+
+globalClock = ClockObject.getGlobalClock()
 
 from src.pee_quest.constants import (
     DOG_BLADDER_MAX,
