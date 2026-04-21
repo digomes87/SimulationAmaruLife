@@ -31,8 +31,8 @@ _FURNITURE = [
     # table
     (2, -3, 1.2, 1.2, 0.9, 0.60, 0.45, 0.28),
     # armchair
-    (5, 4, 1.0, 1.1, 0.3, 0.18, 0.10),
-    # tv
+    (5, 4, 1.0, 1.0, 1.1, 0.3, 0.18, 0.10),
+    # TV stand
     (-5, -4, 2.0, 0.6, 0.7, 0.22, 0.22, 0.22),
 ]
 
@@ -43,7 +43,7 @@ class IndoorScene:
         self.root: NodePath = base.render.attachNewNode("indoor_scene")
 
         self._build_room()
-        self._build_futniture()
+        self._build_furniture()
         self._setup_lighting()
 
         # door
@@ -83,9 +83,46 @@ class IndoorScene:
             # collision
             cn = CollisionNode("wall_col")
             cn.addSolid(CollisionBox(Point3(-sx, -sy, 0), Point3(sx, sy, sz)))
-            cn.setfromCollideMask(BitMask32.allOff())
+            cn.setFromCollideMask(BitMask32.allOff())
             cn.setIntoCollideMask(BitMask32.bit(3))
             w.attachNewNode(cn)
 
     def _build_furniture(self) -> None:
-        pass
+        ldr = self.base.loader
+
+        for x, y, sx, sy, sz, r, g, b in _FURNITURE:
+            piece = ldr.loadModel("models/box")
+            piece.setScale(sx, sy, sz)
+            piece.setColor(r, g, b, 1)
+            piece.reparentTo(self.root)
+            piece.setPos(x, y, sz)
+
+            cn = CollisionNode("furniture_col")
+            cn.addSolid(CollisionBox(Point3(-sx, -sy, -sy), Point3(sx, sy, sz)))
+            cn.setFromCollideMask(BitMask32.allOff())
+            cn.setFromCollideMask(BitMask32.bit(3))
+            piece.attachNewNode(cn)
+
+    def _setup_lighting(self) -> None:
+        alight = AmbientLight("indoor_amb")
+        alight.setColor(Vec4(0.55, 0.50, 0.45, 1))
+        self.root.setLight(self.root.attachNewNode(alight))
+
+        dlight = DirectionalLight("indoor_dir")
+        dlight.setColor(Vec4(0.9, 0.85, 0.75, 1))
+        dlnp = self.root.attachNewNode(dlight)
+        dlnp.setHpr(45, -50, 0)
+        self.root.setLight(dlnp)
+
+    def update(self, dt: float, dog_pos) -> bool:
+        self.door.update(dt)
+        for roomba in self.roombas:
+            if roomba.update(dt, dog_pos):
+                return True
+        return False
+
+    def hide(self) -> None:
+        self.root.hide()
+
+    def show(self) -> None:
+        self.root.show()

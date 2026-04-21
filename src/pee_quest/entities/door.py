@@ -46,7 +46,7 @@ class Door:
         # - collision --
         cnode = CollisionNode("door_col")
         cnode.addSolid(CollisionBox(Point3(-0.25, -1.0, 0), Point3(0.25, 1.0, 2.5)))
-        cnode.setFromCollideMask(BitMask32.allOf())
+        cnode.setFromCollideMask(BitMask32.allOff())
         cnode.setIntoCollideMask(BitMask32.bit(2))
         self._col_np: NodePath = self.root.attachNewNode(cnode)
 

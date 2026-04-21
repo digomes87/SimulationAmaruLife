@@ -33,7 +33,7 @@ class HUD:
             scale=0.055,
             text_fg=(1, 1, 1, 1),
             text_align=TextNode.ARight,
-            frameCOlor=(0, 0, 0, 0),
+            frameColor=(0, 0, 0, 0),
         )
 
         # -- status door
@@ -80,7 +80,7 @@ class HUD:
         if urgency < 0.5:
             self._bladder_bar["barColor"] = (0.25, 0.55, 1.0, 1)
         elif urgency < 0.75:
-            self._bladder_bar["barColor"] = (1.0, 0.75, 0.1, 1)
+            self._bladder_bar["barColor"] = (1.0, 0.75, 0.0, 1)
         else:
             self._bladder_label["barColor"] = (1.0, 0.2, 0.2, 1)
 
@@ -88,7 +88,7 @@ class HUD:
         if indoor:
             if door_open:
                 self._door_label["text"] = (
-                    f"🚪 PORTA ABERTA! {time_remaining_open:1.f}s"
+                    f"🚪 PORTA ABERTA! {time_remaining_open:.1f}s"
                 )
                 self._door_label["text_fg"] = (1.0, 0.75, 0.0, 1)
             else:

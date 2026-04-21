@@ -40,13 +40,13 @@ class Dog:
         body.setScale(DOG_SCALE * 0.9, DOG_SCALE * 1.3, DOG_SCALE * 0.8)
         body.setColor(*COL_DOG)
         body.reparentTo(self.root)
-        body.setZ(0, DOG_SCALE * 0.9, DOG_SCALE * 1.6)
+        body.setZ(DOG_SCALE * 0.8)
 
         # head
         head = base.loader.loadModel("models/misc/sphere")
         head.setScale(DOG_SCALE * 0.55)
         head.setColor(*COL_DOG)
-        head.repatenTo(self.root)
+        head.reparentTo(self.root)
         head.setPos(0, DOG_SCALE * 0.9, DOG_SCALE * 1.6)
 
         # tail stub
@@ -58,7 +58,7 @@ class Dog:
 
         # -- colision
         cnode = CollisionNode("dog_col")
-        cnode.addSolid(CollisionSphere(0, 0, DOG_SCALE * 0.9))
+        cnode.addSolid(CollisionSphere(0, 0, DOG_SCALE * 0.8, DOG_SCALE * 0.9))
         cnode.setFromCollideMask(BitMask32.bit(1))
         cnode.setIntoCollideMask(BitMask32.allOff())
         self.col_np: NodePath = self.root.attachNewNode(cnode)
@@ -74,7 +74,7 @@ class Dog:
             self.root.setH(self.root, self.turn_speed * dt)
 
         if keys["right"]:
-            self.root.setK(self.root, -self.turn_speed * dt)
+            self.root.setH(self.root, -self.turn_speed * dt)
 
         # moviments
         move = Vec3(0, 0, 0)
